@@ -12,7 +12,7 @@ import (
 )
 
 func handleList() {
-	endpoint := "http://localhost:9999/scanner/v1/list/"
+	endpoint := buildEndpoint()
 	resp, err := http.Get(endpoint)
 	if err != nil {
 		panic(err)

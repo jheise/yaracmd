@@ -13,7 +13,7 @@ import (
 )
 
 func handleScan(target string) {
-	endpoint := fmt.Sprintf("http://localhost:9999/scanner/v1/%s/scan/", target)
+	endpoint := buildEndpoint() + target + "/scan/"
 	resp, err := http.Get(endpoint)
 	if err != nil {
 		panic(err)
@@ -24,8 +24,6 @@ func handleScan(target string) {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Got back " + string(body))
 
 	var current yaramsg.ScanResponse
 	json.Unmarshal(body, &current)

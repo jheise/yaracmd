@@ -2,20 +2,31 @@ package main
 
 import (
 	// standard
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	// external
 	"github.com/jheise/yaramsg"
 )
 
-func handleRemove(target string) {
+func handleUpload(target string) {
 	endpoint := buildEndpoint() + target
 
+	// open file
+	f, err := os.Open(target)
+	if err != nil {
+		panic(err)
+	}
+
+	// make reader
+	reader := bufio.NewReader(f)
+
 	// create a new request because the default http client in go doesnt delete
-	req, err := http.NewRequest("DELETE", endpoint, nil)
+	req, err := http.NewRequest("PUT", endpoint, reader)
 	if err != nil {
 		panic(err)
 	}
@@ -35,8 +46,8 @@ func handleRemove(target string) {
 	json.Unmarshal(body, &current)
 
 	if current.Result {
-		fmt.Println("Successfully removed " + target)
+		fmt.Println("Successfully uploaded " + target)
 	} else {
-		fmt.Println("Failed to remove " + target)
+		fmt.Println("Failed to upload " + target)
 	}
 }
