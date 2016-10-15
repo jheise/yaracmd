@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 func handleDownload(target string) {
@@ -16,6 +17,11 @@ func handleDownload(target string) {
 		panic(err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusInternalServerError {
+		fmt.Println("Failed to download " + target)
+		os.Exit(1)
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
